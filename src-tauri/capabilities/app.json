@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/capabilities.json",
+  "identifier": "app",
+  "description": "Allow invoking internal app commands.",
+  "windows": ["*"],
+  "permissions": ["core:app:default"]
+}

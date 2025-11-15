@@ -1,0 +1,83 @@
+/* Повноекранний шар онбордингу */
+.ob-wrap{
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(2px);
+  z-index: 1200;
+}
+
+.ob-card{
+  width: min(860px, 96vw);
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #1b2838;
+  border-radius: 16px;
+  background: #0f1b2b;
+  box-shadow: 0 28px 80px rgba(0,0,0,.45);
+}
+
+.ob-header{
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #1b2838;
+}
+.ob-title{ font-weight: 800; color: #c7d5e0; }
+.ob-close{
+  margin-left: auto; border: none; background: transparent; color: #8aa2b5;
+  cursor: pointer; font-size: 18px; line-height: 1; padding: 6px 8px; border-radius: 8px;
+}
+.ob-close:hover{ background: #0d1726; color: #c7d5e0; }
+
+.ob-body{ padding: 16px; overflow: auto; }
+
+.ob-screenTitle{
+  font-weight: 900; color: #c7d5e0; font-size: 20px; margin-bottom: 6px;
+}
+.ob-content{ color: #c7d5e0; }
+
+.ob-text{ color: #8aa2b5; line-height: 1.6; }
+
+.ob-row{ display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+
+.ob-input{
+  flex: 1; min-width: 280px;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1px solid #24364a; background: #0c1624; color: #c7d5e0;
+}
+
+.ob-btn{
+  padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  border: 1px solid #1b2838; background: #0d1726; color: #c7d5e0;
+}
+.ob-btn:hover{ filter: brightness(1.05); }
+.ob-btnAccent{
+  border: none; background: #66c0f4; color: #0b1016; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(102,192,244,.25);
+}
+
+.ob-hint{ color: #8aa2b5; font-size: 12px; }
+
+.ob-small{ color: #8aa2b5; font-size: 12px; margin-top: 8px; }
+
+.ob-error{
+  margin-top: 10px; color: #ffd2d2; background: #3a0f16;
+  border: 1px solid #5e1a25; padding: 10px 12px; border-radius: 10px;
+}
+
+/* Низ картки */
+.ob-footer{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 12px 14px; border-top: 1px solid #1b2838;
+}
+.ob-dots{ display: flex; gap: 6px; }
+.ob-dot{
+  width: 8px; height: 8px; border-radius: 999px; background: #24364a;
+}
+.ob-dot.is-active{ background: #66c0f4; }
+.ob-actions{ display: flex; gap: 8px; }
+
+/* Список порад */
+.ob-tips{ margin: 10px 0 0; padding-left: 18px; color: #8aa2b5; }
+.ob-tips li{ margin: 4px 0; }

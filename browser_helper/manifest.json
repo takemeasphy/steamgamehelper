@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "SteamGameHelper — Family SteamIDs",
+  "version": "1.0.3",
+  "permissions": ["clipboardWrite"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://store.steampowered.com/account/family*",
+        "https://store.steampowered.com/account/familymanagement*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
