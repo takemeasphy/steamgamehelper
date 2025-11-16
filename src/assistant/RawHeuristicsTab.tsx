@@ -1,28 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { colors } from "../ui/palette";
+import { call } from "../lib/backend";
+import type { LibraryGame, PartialSettings } from "../lib/backend";
 
-/** ===== Types ===== */
-type LibraryGame = {
-  appid: number;
-  name: string;
-  installed: boolean;
-  playtime_minutes?: number | null;
-  shared_from?: string | null;
-};
-
-type PartialSettings = {
-  api_key?: string;
-  main_steam_id64?: string;
-  family_ids?: string[];
-  ai_api_key?: string;
-  ai_base_url?: string;
-};
-
-const call = <T,>(cmd: string, args?: Record<string, any>) =>
-  invoke<T>(`plugin:app|${cmd}`, args);
-
-/** ===== Lightweight genre tagging (same idea as backend) ===== */
 function guessGenres(name: string): string[] {
   const n = name.toLowerCase();
   const table: Array<[string[], string]> = [
@@ -43,32 +23,34 @@ function guessGenres(name: string): string[] {
   return ["misc"];
 }
 
-/** ===== Stats helpers ===== */
 function sum<T>(arr: T[], f: (t: T) => number): number {
   return arr.reduce((acc, x) => acc + f(x), 0);
 }
+
 function maxBy<T>(arr: T[], f: (t: T) => number): T | undefined {
   let best: T | undefined;
   let bestV = -Infinity;
   for (const it of arr) {
     const v = f(it);
-    if (v > bestV) { bestV = v; best = it; }
+    if (v > bestV) {
+      bestV = v;
+      best = it;
+    }
   }
   return best;
 }
+
 function minutesToHHmm(m: number): string {
   const h = Math.floor(m / 60);
   const mm = m % 60;
   return `${h}h ${mm}m`;
 }
 
-/** ===== Main component ===== */
 export default function RawHeuristicsTab() {
   const [library, setLibrary] = useState<LibraryGame[]>([]);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [persona, setPersona] = useState<string | null>(null);
 
-  // 1) Load library cache
   useEffect(() => {
     (async () => {
       try {
@@ -80,7 +62,6 @@ export default function RawHeuristicsTab() {
     })();
   }, []);
 
-  // 2) Fetch avatar from Steam Web API if possible
   useEffect(() => {
     (async () => {
       try {
@@ -90,7 +71,7 @@ export default function RawHeuristicsTab() {
         if (!apiKey || !sid) return;
 
         const url = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${encodeURIComponent(
-          apiKey
+          apiKey,
         )}&steamids=${encodeURIComponent(sid)}`;
 
         const res = await fetch(url);
@@ -100,12 +81,10 @@ export default function RawHeuristicsTab() {
         if (player?.avatarfull) setAvatar(player.avatarfull as string);
         if (player?.personaname) setPersona(player.personaname as string);
       } catch {
-        // ignore: leave avatar null
       }
     })();
   }, []);
 
-  /** 3) Compute stats + candidates (local heuristics only) */
   const {
     installedCount,
     unplayedCount,
@@ -124,7 +103,6 @@ export default function RawHeuristicsTab() {
     const totalMinutes = sum(withPlay, (g) => g.playtime_minutes ?? 0);
     const avgMinutes = withPlay.length ? Math.round(totalMinutes / withPlay.length) : 0;
 
-    // top genre by total minutes
     const minutesByGenre = new Map<string, number>();
     for (const g of list) {
       const m = g.playtime_minutes ?? 0;
@@ -136,13 +114,14 @@ export default function RawHeuristicsTab() {
     let topGenre = "—";
     let topV = 0;
     for (const [k, v] of minutesByGenre) {
-      if (v > topV) { topV = v; topGenre = k; }
+      if (v > topV) {
+        topV = v;
+        topGenre = k;
+      }
     }
 
-    // longest session (by total minutes per game, simple proxy)
     const longestGame = maxBy(list, (g) => g.playtime_minutes ?? 0);
 
-    // simple scoring for suggested picks
     const scored = list.map((g) => {
       const m = g.playtime_minutes ?? 0;
       const installed = g.installed ? 1 : 0;
@@ -169,7 +148,6 @@ export default function RawHeuristicsTab() {
     };
   }, [library]);
 
-  /** ===== UI ===== */
   return (
     <div
       style={{
@@ -178,7 +156,6 @@ export default function RawHeuristicsTab() {
         flexDirection: "column",
       }}
     >
-      {/* Header: Avatar + Persona */}
       <div
         style={{
           position: "relative",
@@ -242,7 +219,6 @@ export default function RawHeuristicsTab() {
         </div>
       </div>
 
-      {/* Stats row */}
       <div
         style={{
           marginTop: 24,
@@ -267,7 +243,6 @@ export default function RawHeuristicsTab() {
         <StatCard label="Avg session" value={minutesToHHmm(avgMinutes)} />
       </div>
 
-      {/* Suggestions / Picks */}
       <div style={{ padding: 10 }}>
         <div
           style={{
@@ -371,7 +346,6 @@ export default function RawHeuristicsTab() {
   );
 }
 
-/** Small stat card */
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div
