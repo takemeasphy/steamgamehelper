@@ -1,24 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { colors } from "../ui/palette";
+import { call } from "../lib/backend";
+import type { LibraryGame } from "../lib/backend";
 
-/** ---------- types ---------- */
 type Msg = { role: "assistant" | "user"; text: string; ts: number };
 type Locale = "uk" | "en";
 type Mode = "chat" | "raw";
-type LibraryGame = {
-  appid: number;
-  name: string;
-  installed: boolean;
-  playtime_minutes?: number | null;
-  shared_from?: string | null;
-};
 
-/** універсальний хелпер для викликів команд плагіна "app" */
-const call = <T,>(cmd: string, args?: Record<string, any>) =>
-  invoke<T>(`plugin:app|${cmd}`, args);
-
-/** ---------- i18n ---------- */
 function readLocale(): Locale {
   try {
     return localStorage.getItem("sghelper:locale") === "en" ? "en" : "uk";
@@ -62,7 +50,6 @@ function tFactory(locale: Locale) {
   return (k: string) => (locale === "en" ? en : uk)[k] ?? k;
 }
 
-/** ---------- Raw heuristics tab (без внутрішнього tip, щоб не дублювався) ---------- */
 function RawHeuristicsTab() {
   const [list, setList] = useState<LibraryGame[]>([]);
   const [picks, setPicks] = useState<
@@ -180,7 +167,6 @@ function RawHeuristicsTab() {
   );
 }
 
-/** ---------- main UI (tabs + chat) ---------- */
 export default function AskAssistant() {
   const [locale, setLocale] = useState<Locale>(readLocale);
   const t = tFactory(locale);
@@ -196,14 +182,12 @@ export default function AskAssistant() {
   const listRef = useRef<HTMLDivElement | null>(null);
   const sendingRef = useRef(false);
 
-  /** автоскрол */
   useEffect(() => {
     const div = listRef.current;
     if (!div) return;
     div.scrollTo({ top: div.scrollHeight, behavior: "smooth" });
   }, [messages.length]);
 
-  /** автооновлення локалі */
   useEffect(() => {
     const id = setInterval(() => {
       const cur = readLocale();
@@ -212,7 +196,6 @@ export default function AskAssistant() {
     return () => clearInterval(id);
   }, []);
 
-  /** коли змінився locale — перезаписати перше привітання */
   useEffect(() => {
     setMessages((prev) => {
       if (prev.length === 1 && prev[0].role === "assistant") {
@@ -220,11 +203,10 @@ export default function AskAssistant() {
       }
       return prev;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale]);
 
   async function send(msg: string) {
-    if (mode !== "chat") return; // відправлення лише у чат-режимі (але він заблокований оверлеєм)
+    if (mode !== "chat") return;
 
     const trimmed = msg.trim();
     if (!trimmed || busy || sendingRef.current) return;
@@ -250,16 +232,16 @@ export default function AskAssistant() {
         return [...next, { role: "assistant", text: answer || "", ts: Date.now() }];
       });
     } catch (e: any) {
-      const msg = `[${t("errPrefix")}]: ${t("llmUnavailable")} ${e?.toString?.() ?? ""}`.trim();
+      const msgErr = `[${t("errPrefix")}]: ${t("llmUnavailable")} ${e?.toString?.() ?? ""}`.trim();
       setMessages((m) => {
         const next = m.slice();
         for (let i = next.length - 1; i >= 0; i--) {
           if (next[i].role === "assistant" && next[i].text === t("thinking")) {
-            next[i] = { role: "assistant", text: msg, ts: Date.now() };
+            next[i] = { role: "assistant", text: msgErr, ts: Date.now() };
             return next;
           }
         }
-        return [...next, { role: "assistant", text: msg, ts: Date.now() }];
+        return [...next, { role: "assistant", text: msgErr, ts: Date.now() }];
       });
     } finally {
       setBusy(false);
@@ -274,7 +256,6 @@ export default function AskAssistant() {
     sendingRef.current = false;
   }
 
-  /** формат часу (на ховер) */
   function fmt(ts: number) {
     const d = new Date(ts);
     return d.toLocaleString();
@@ -305,7 +286,6 @@ export default function AskAssistant() {
     </button>
   );
 
-  /** оверлей для чату (повне покриття контейнера) */
   function ChatOverlay() {
     return (
       <div
@@ -319,7 +299,6 @@ export default function AskAssistant() {
           zIndex: 10,
         }}
       >
-        {/* напівпрозорий фон для повного покриття */}
         <div
           style={{
             position: "absolute",
@@ -328,7 +307,6 @@ export default function AskAssistant() {
             backdropFilter: "blur(3px)",
           }}
         />
-        {/* бейдж повідомлення */}
         <div
           style={{
             position: "relative",
@@ -357,7 +335,6 @@ export default function AskAssistant() {
         background: colors.panelSoft,
       }}
     >
-      {/* Tabs */}
       <div
         style={{
           display: "flex",
@@ -370,21 +347,18 @@ export default function AskAssistant() {
         <TabButton label={t("tabRaw")} active={mode === "raw"} onClick={() => setMode("raw")} />
       </div>
 
-      {/* Content */}
       <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
         {mode === "chat" ? (
-          // Обгортка всього чат-інтерфейсу, щоб оверлей накривав і список, і інпут
           <div style={{ position: "absolute", inset: 0 }}>
-            {/* Контент чату (під оверлеєм): розділив на scroll-list та input */}
             <div
               style={{
                 position: "absolute",
-                inset: "0 0 56px 0", // лишаємо місце під input-бар (56px)
+                inset: "0 0 56px 0",
                 overflowY: "auto",
                 padding: 12,
                 filter: "blur(0.5px)",
                 opacity: 0.55,
-                pointerEvents: "none", // блокуємо взаємодію під оверлеєм
+                pointerEvents: "none",
               }}
               ref={listRef}
             >
@@ -398,7 +372,6 @@ export default function AskAssistant() {
                     position: "relative",
                   }}
                 >
-                  {/* time (appears on hover) – залишили, але воно все одно заблоковано overlay */}
                   <div
                     style={{
                       position: "absolute",
@@ -432,7 +405,6 @@ export default function AskAssistant() {
               ))}
             </div>
 
-            {/* input-bar (також під оверлеєм) */}
             <div
               style={{
                 position: "absolute",
@@ -497,7 +469,6 @@ export default function AskAssistant() {
               </button>
             </div>
 
-            {/* блокуючий оверлей поверх усього чат-контейнера */}
             <ChatOverlay />
           </div>
         ) : (
