@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import AnimatedLogo from "../AnimatedLogo";
+import AnimatedLogo from "../brand/AnimatedLogo";
 
 type Props = { onContinue?: () => void };
 

@@ -1,4 +1,4 @@
-import AssistantTab from "../assistant/AskAssistant";
+import AssistantTab from "../../assistant/AskAssistant";
 
 type Props = {
   gamesCount: number;
