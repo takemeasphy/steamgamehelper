@@ -6,6 +6,7 @@ import Onboarding from "./ui/Onboarding";
 import "./ui/ScanScreen.css";
 import { call } from "./lib/backend";
 import type { LibraryGame, AccountHint, PartialSettings } from "./lib/backend";
+import LibraryView from "./ui/LibraryView";
 
 const steam = {
   bg: "#0b141e",
@@ -216,8 +217,7 @@ export default function ScanScreen() {
     return q
       ? games.filter(
           (g) =>
-            (g.name || "").toLowerCase().includes(q) ||
-            String(g.appid).includes(q),
+            (g.name || "").toLowerCase().includes(q) || String(g.appid).includes(q),
         )
       : games;
   }, [games, search]);
@@ -230,14 +230,11 @@ export default function ScanScreen() {
         break;
       case "playtime":
         arr.sort(
-          (a, b) =>
-            (b.playtime_minutes ?? 0) - (a.playtime_minutes ?? 0),
+          (a, b) => (b.playtime_minutes ?? 0) - (a.playtime_minutes ?? 0),
         );
         break;
       case "installed":
-        arr.sort(
-          (a, b) => Number(b.installed) - Number(a.installed),
-        );
+        arr.sort((a, b) => Number(b.installed) - Number(a.installed));
         break;
     }
     return arr;
@@ -260,9 +257,7 @@ export default function ScanScreen() {
           }}
         >
           <AnimatedLogo size={52} />
-          <h1 style={{ fontSize: 28, margin: 0, color: steam.text }}>
-            SteamGameHelper
-          </h1>
+          <h1 style={{ fontSize: 28, margin: 0, color: steam.text }}>SteamGameHelper</h1>
           <div style={{ marginLeft: "auto" }}>
             <button
               onClick={() => {
@@ -289,8 +284,7 @@ export default function ScanScreen() {
           style={{
             borderRadius: 18,
             padding: 14,
-            background:
-              "linear-gradient(180deg, #0f1b2b 0%, #0d1726 100%)",
+            background: "linear-gradient(180deg, #0f1b2b 0%, #0d1726 100%)",
             border: `1px solid ${steam.border}`,
             boxShadow: "0 26px 80px rgba(0,0,0,.38)",
           }}
@@ -305,9 +299,7 @@ export default function ScanScreen() {
             }}
           >
             <div style={{ fontWeight: 800, fontSize: 16 }}>
-              {locale === "en"
-                ? "Ask the assistant"
-                : "Порадитись з ІІ"}
+              {locale === "en" ? "Ask the assistant" : "Порадитись з ІІ"}
             </div>
             <div
               style={{
@@ -374,9 +366,7 @@ export default function ScanScreen() {
               ? "Tip: open Settings → Scan to refresh the library for better recommendations."
               : "Порада: відкрий «Налаштування» → «Сканування», щоб оновити бібліотеку для точніших рекомендацій."}
             {error ? (
-              <span style={{ color: "#ffd2d2", marginLeft: 8 }}>
-                • {error}
-              </span>
+              <span style={{ color: "#ffd2d2", marginLeft: 8 }}>• {error}</span>
             ) : null}
           </div>
         </div>
@@ -435,14 +425,10 @@ export default function ScanScreen() {
                     padding: "8px 10px",
                     borderRadius: 8,
                     border: `1px solid ${
-                      settingsTab === "params"
-                        ? steam.accent
-                        : steam.border
+                      settingsTab === "params" ? steam.accent : steam.border
                     }`,
                     background:
-                      settingsTab === "params"
-                        ? "#11273a"
-                        : steam.panelSoft,
+                      settingsTab === "params" ? "#11273a" : steam.panelSoft,
                     color: steam.text,
                     cursor: "pointer",
                   }}
@@ -455,14 +441,10 @@ export default function ScanScreen() {
                     padding: "8px 10px",
                     borderRadius: 8,
                     border: `1px solid ${
-                      settingsTab === "scan"
-                        ? steam.accent
-                        : steam.border
+                      settingsTab === "scan" ? steam.accent : steam.border
                     }`,
                     background:
-                      settingsTab === "scan"
-                        ? "#11273a"
-                        : steam.panelSoft,
+                      settingsTab === "scan" ? "#11273a" : steam.panelSoft,
                     color: steam.text,
                     cursor: "pointer",
                   }}
@@ -475,14 +457,10 @@ export default function ScanScreen() {
                     padding: "8px 10px",
                     borderRadius: 8,
                     border: `1px solid ${
-                      settingsTab === "library"
-                        ? steam.accent
-                        : steam.border
+                      settingsTab === "library" ? steam.accent : steam.border
                     }`,
                     background:
-                      settingsTab === "library"
-                        ? "#11273a"
-                        : steam.panelSoft,
+                      settingsTab === "library" ? "#11273a" : steam.panelSoft,
                     color: steam.text,
                     cursor: "pointer",
                   }}
@@ -522,9 +500,7 @@ export default function ScanScreen() {
                       color: steam.text,
                     }}
                   >
-                    <div
-                      style={{ fontWeight: 700, marginBottom: 6 }}
-                    >
+                    <div style={{ fontWeight: 700, marginBottom: 6 }}>
                       {locale === "en" ? "AI" : "ШІ"}
                     </div>
                     <div
@@ -549,16 +525,12 @@ export default function ScanScreen() {
                     }}
                   >
                     <label style={{ color: steam.textMuted }}>
-                      {locale === "en"
-                        ? "Interface language:"
-                        : "Мова інтерфейсу:"}
+                      {locale === "en" ? "Interface language:" : "Мова інтерфейсу:"}
                     </label>
                     <select
                       value={locale}
                       onChange={(e) =>
-                        setLocale(
-                          (e.target.value as "uk" | "en") || "uk",
-                        )
+                        setLocale((e.target.value as "uk" | "en") || "uk")
                       }
                       style={{
                         padding: "10px 12px",
@@ -581,9 +553,7 @@ export default function ScanScreen() {
                       alignItems: "center",
                     }}
                   >
-                    <label style={{ color: steam.textMuted }}>
-                      Steam API key:
-                    </label>
+                    <label style={{ color: steam.textMuted }}>Steam API key:</label>
                     <input
                       value={apiKey}
                       onChange={(e) => setApiKey(e.target.value)}
@@ -607,9 +577,7 @@ export default function ScanScreen() {
                         cursor: "pointer",
                       }}
                     >
-                      {locale === "en"
-                        ? "Where to get?"
-                        : "Де взяти ключ?"}
+                      {locale === "en" ? "Where to get?" : "Де взяти ключ?"}
                     </button>
                   </div>
 
@@ -621,9 +589,7 @@ export default function ScanScreen() {
                       alignItems: "center",
                     }}
                   >
-                    <label style={{ color: steam.textMuted }}>
-                      SteamID64:
-                    </label>
+                    <label style={{ color: steam.textMuted }}>SteamID64:</label>
                     <div
                       style={{
                         display: "flex",
@@ -632,9 +598,7 @@ export default function ScanScreen() {
                     >
                       <input
                         value={steamId}
-                        onChange={(e) =>
-                          setSteamId(e.target.value)
-                        }
+                        onChange={(e) => setSteamId(e.target.value)}
                         placeholder="7656119XXXXXXXXXX"
                         style={{
                           flex: 1,
@@ -656,9 +620,7 @@ export default function ScanScreen() {
                           cursor: "pointer",
                         }}
                       >
-                        {locale === "en"
-                          ? "Refresh accounts"
-                          : "Оновити акаунти"}
+                        {locale === "en" ? "Refresh accounts" : "Оновити акаунти"}
                       </button>
                     </div>
                   </div>
@@ -672,18 +634,14 @@ export default function ScanScreen() {
                         alignItems: "center",
                       }}
                     >
-                      <label
-                        style={{ color: steam.textMuted }}
-                      >
+                      <label style={{ color: steam.textMuted }}>
                         {locale === "en"
                           ? "Detected accounts:"
                           : "Знайдені акаунти:"}
                       </label>
                       <select
                         value={steamId}
-                        onChange={(e) =>
-                          setSteamId(e.target.value)
-                        }
+                        onChange={(e) => setSteamId(e.target.value)}
                         style={{
                           padding: "10px 12px",
                           borderRadius: 10,
@@ -693,12 +651,8 @@ export default function ScanScreen() {
                         }}
                       >
                         {accounts.map((a) => (
-                          <option
-                            key={a.steamid64}
-                            value={a.steamid64}
-                          >
-                            {a.persona || a.steamid64} (
-                            {a.steamid64})
+                          <option key={a.steamid64} value={a.steamid64}>
+                            {a.persona || a.steamid64} ({a.steamid64})
                           </option>
                         ))}
                       </select>
@@ -708,20 +662,15 @@ export default function ScanScreen() {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns:
-                        "200px 1fr auto auto auto",
+                      gridTemplateColumns: "200px 1fr auto auto auto",
                       gap: 10,
                       alignItems: "center",
                     }}
                   >
-                    <label style={{ color: steam.textMuted }}>
-                      Family SteamID64:
-                    </label>
+                    <label style={{ color: steam.textMuted }}>Family SteamID64:</label>
                     <input
                       value={familyIds}
-                      onChange={(e) =>
-                        setFamilyIds(e.target.value)
-                      }
+                      onChange={(e) => setFamilyIds(e.target.value)}
                       placeholder="7656119..., 7656119..."
                       style={{
                         padding: "10px 12px",
@@ -747,9 +696,7 @@ export default function ScanScreen() {
                           cursor: "pointer",
                         }}
                       >
-                        {locale === "en"
-                          ? "Open Family"
-                          : "Відкрити сімʼю"}
+                        {locale === "en" ? "Open Family" : "Відкрити сімʼю"}
                       </button>
                     </a>
                     <button
@@ -763,9 +710,7 @@ export default function ScanScreen() {
                         cursor: "pointer",
                       }}
                     >
-                      {locale === "en"
-                        ? "Paste"
-                        : "Вставити"}
+                      {locale === "en" ? "Paste" : "Вставити"}
                     </button>
                     <button
                       onClick={installBrowserHelper}
@@ -783,9 +728,7 @@ export default function ScanScreen() {
                         cursor: "pointer",
                       }}
                     >
-                      {locale === "en"
-                        ? "Helper"
-                        : "Помічник"}
+                      {locale === "en" ? "Helper" : "Помічник"}
                     </button>
                   </div>
 
@@ -825,13 +768,10 @@ export default function ScanScreen() {
                           border: "none",
                           cursor: "pointer",
                           fontWeight: 700,
-                          boxShadow:
-                            "0 4px 12px rgba(102,192,244,.25)",
+                          boxShadow: "0 4px 12px rgba(102,192,244,.25)",
                         }}
                       >
-                        {locale === "en"
-                          ? "Save"
-                          : "Зберегти"}
+                        {locale === "en" ? "Save" : "Зберегти"}
                       </button>
                     </div>
                   </div>
@@ -868,8 +808,7 @@ export default function ScanScreen() {
                         border: "none",
                         cursor: "pointer",
                         fontWeight: 700,
-                        boxShadow:
-                          "0 6px 18px rgba(102,192,244,.25)",
+                        boxShadow: "0 6px 18px rgba(102,192,244,.25)",
                         opacity: busy ? 0.7 : 1,
                       }}
                     >
@@ -894,9 +833,7 @@ export default function ScanScreen() {
                         opacity: busy ? 0.7 : 1,
                       }}
                     >
-                      {locale === "en"
-                        ? "Clear cache"
-                        : "Очистити кеш"}
+                      {locale === "en" ? "Clear cache" : "Очистити кеш"}
                     </button>
                     <div
                       style={{
@@ -913,10 +850,8 @@ export default function ScanScreen() {
                           fontSize: 13,
                         }}
                       >
-                        {locale === "en"
-                          ? "Cached"
-                          : "У кеші"}
-                        : <b>{games.length}</b>
+                        {locale === "en" ? "Cached" : "У кеші"}:{" "}
+                        <b>{games.length}</b>
                       </div>
                       <div
                         style={{
@@ -926,17 +861,8 @@ export default function ScanScreen() {
                           fontSize: 13,
                         }}
                       >
-                        {locale === "en"
-                          ? "Installed"
-                          : "Встановлено"}
-                        :{" "}
-                        <b>
-                          {
-                            games.filter(
-                              (g) => g.installed,
-                            ).length
-                          }
-                        </b>
+                        {locale === "en" ? "Installed" : "Встановлено"}:{" "}
+                        <b>{games.filter((g) => g.installed).length}</b>
                       </div>
                     </div>
                   </div>
@@ -985,228 +911,11 @@ export default function ScanScreen() {
           }}
           onDone={() => {
             try {
-              localStorage.setItem(
-                "sghelper:onboarding_done",
-                "1",
-              );
+              localStorage.setItem("sghelper:onboarding_done", "1");
             } catch {}
             setShowOnboarding(false);
           }}
         />
-      )}
-    </div>
-  );
-}
-
-function LibraryView({
-  games,
-  total,
-  sortBy,
-  setSortBy,
-  search,
-  setSearch,
-  locale,
-}: {
-  games: LibraryGame[];
-  total: number;
-  sortBy: "name" | "playtime" | "installed";
-  setSortBy: (v: "name" | "playtime" | "installed") => void;
-  search: string;
-  setSearch: (v: string) => void;
-  locale: "uk" | "en";
-}) {
-  const steam = {
-    panelSoft: "#0d1726",
-    inputBg: "#0c1624",
-    inputBorder: "#24364a",
-    border: "#1b2838",
-    text: "#c7d5e0",
-    textMuted: "#8aa2b5",
-    chipBg: "#203448",
-  };
-
-  const t = (k: string) => {
-    const uk: Record<string, string> = {
-      search: "Пошук у бібліотеці…",
-      sortName: "За назвою",
-      sortPlaytime: "За часом у грі",
-      sortInstalled: "Встановлені ↑",
-      shown: "Показано",
-      installed: "Встановлено",
-      notInstalled: "Не встановлено",
-      time: "Час у грі",
-      hoursShort: "год",
-      familyFrom: "Family від",
-      noResults:
-        "Немає результатів. Запусти сканування або зміни фільтр/пошук.",
-    };
-    const en: Record<string, string> = {
-      search: "Search your library…",
-      sortName: "By name",
-      sortPlaytime: "By playtime",
-      sortInstalled: "Installed ↑",
-      shown: "Shown",
-      installed: "Installed",
-      notInstalled: "Not installed",
-      time: "Playtime",
-      hoursShort: "h",
-      familyFrom: "Family from",
-      noResults:
-        "No results. Run scan or change filter/search.",
-    };
-    return (locale === "en" ? en : uk)[k] ?? k;
-  };
-
-  return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          alignItems: "center",
-          marginBottom: 12,
-        }}
-      >
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={t("search")}
-          style={{
-            flex: 1,
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: `1px solid ${steam.inputBorder}`,
-            background: steam.inputBg,
-            color: steam.text,
-          }}
-        />
-        <select
-          value={sortBy}
-          onChange={(e) =>
-            setSortBy(e.target.value as "name" | "playtime" | "installed")
-          }
-          style={{
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: `1px solid ${steam.inputBorder}`,
-            background: steam.inputBg,
-            color: steam.text,
-          }}
-        >
-          <option value="name">{t("sortName")}</option>
-          <option value="playtime">{t("sortPlaytime")}</option>
-          <option value="installed">{t("sortInstalled")}</option>
-        </select>
-        <span
-          style={{
-            color: steam.textMuted,
-            fontSize: 12,
-          }}
-        >
-          {t("shown")}: {games.length} / {total}
-        </span>
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gap: 8,
-          gridTemplateColumns:
-            "repeat(auto-fill,minmax(260px,1fr))",
-        }}
-      >
-        {games.map((g) => (
-          <div
-            key={g.appid}
-            style={{
-              borderRadius: 12,
-              padding: 12,
-              background: steam.panelSoft,
-              border: `1px solid ${
-                g.installed ? "#1c4f2b" : steam.border
-              }`,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 8,
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 600,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-                title={g.name || `App ${g.appid}`}
-              >
-                {g.name || `App ${g.appid}`}
-              </div>
-              <span
-                style={{
-                  fontSize: 12,
-                  padding: "2px 8px",
-                  borderRadius: 999,
-                  background: g.installed
-                    ? "rgba(89,191,64,.15)"
-                    : steam.chipBg,
-                  color: g.installed ? "#59bf40" : "#8aa2b5",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {g.installed ? t("installed") : t("notInstalled")}
-              </span>
-            </div>
-            <div
-              style={{
-                opacity: 0.7,
-                fontSize: 12,
-                marginTop: 4,
-                color: "#8aa2b5",
-              }}
-            >
-              appid: {g.appid}
-            </div>
-            <div
-              style={{
-                opacity: 0.9,
-                fontSize: 12,
-                marginTop: 6,
-              }}
-            >
-              {t("time")}:{" "}
-              {g.playtime_minutes != null
-                ? `${Math.round(
-                    (g.playtime_minutes ?? 0) / 60,
-                  )} ${t("hoursShort")}`
-                : "—"}
-            </div>
-            {g.shared_from && (
-              <div
-                style={{
-                  opacity: 0.75,
-                  fontSize: 12,
-                  marginTop: 6,
-                }}
-              >
-                {t("familyFrom")}: <code>{g.shared_from}</code>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      {games.length === 0 && (
-        <div
-          style={{
-            opacity: 0.7,
-            marginTop: 12,
-            color: "#8aa2b5",
-          }}
-        >
-          {t("noResults")}
-        </div>
       )}
     </div>
   );
