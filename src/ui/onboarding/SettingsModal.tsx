@@ -1,5 +1,5 @@
-import type { AccountHint, LibraryGame } from "../lib/backend";
-import LibraryView from "./LibraryView";
+import type { AccountHint, LibraryGame } from "../../lib/backend";
+import LibraryView from "../scan/LibraryView";
 
 type SettingsTab = "params" | "scan" | "library";
 

@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
-import AnimatedLogo from "./ui/AnimatedLogo";
-import AssistantPanel from "./ui/AssistantPanel";
-import Onboarding from "./ui/Onboarding";
-import "./ui/ScanScreen.css";
+
+import AnimatedLogo from "./ui/brand/AnimatedLogo";
+import AssistantPanel from "./ui/scan/AssistantPanel";
+import Onboarding from "./ui/onboarding/Onboarding";
+import "./ui/scan/ScanScreen.css";
+
 import { call } from "./lib/backend";
 import type { LibraryGame, AccountHint, PartialSettings } from "./lib/backend";
-import SettingsModal from "./ui/SettingsModal";
+import SettingsModal from "./ui/onboarding/SettingsModal";
 
 const steam = {
   bg: "#0b141e",
