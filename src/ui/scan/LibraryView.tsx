@@ -1,4 +1,4 @@
-import type { LibraryGame } from "../lib/backend";
+import type { LibraryGame } from "../../lib/backend";
 
 type SortBy = "name" | "playtime" | "installed";
 type Locale = "uk" | "en";
